@@ -54,7 +54,48 @@ class CharacterCollection(Resource):
         return character_schema.dump(character), 201
 
 
-class CharacterResource(Resource):
+class CharacterCollectionName(Resource):
+    def get(self):
+        characters = CharacterModel.objects()
+        return characters_schema.dump(characters), 200
+
+
+class CharacterResourceName(Resource):
+    def get(self, name):
+        try:
+            character = CharacterModel.objects.get(name=name)
+        except DoesNotExist:
+            abort(404, message="Character not found")
+        return character_schema.dump(character), 200
+
+    def patch(self, name):
+        json_data = request.get_json()
+        try:
+            character = CharacterModel.objects.get(name=name)
+        except DoesNotExist:
+            abort(404, message="Character not found")
+        if "name" in json_data:
+            character.name = json_data["name"]
+        if "affiliation" in json_data:
+            character.affiliation = json_data["affiliation"]
+        if "homeworld" in json_data:
+            character.homeworld = json_data["homeworld"]
+        if "species" in json_data:
+            character.species = json_data["species"]
+        character.save()
+        return character_schema.dump(character), 200
+
+    def delete(self, name):
+        try:
+            character = CharacterModel.objects.get(name=name)
+        except DoesNotExist:
+            abort(404, message="Character not found")
+        character.delete()
+        return "", 204
+
+
+class CharacterResourceId(Resource):
+
     def get(self, id):
         try:
             character = CharacterModel.objects.get(id=id)
@@ -88,8 +129,10 @@ class CharacterResource(Resource):
         return "", 204
 
 
-api.add_resource(CharacterResource, "/api/characters/<string:id>")
+api.add_resource(CharacterResourceName, "/api/characters/<string:name>")
+api.add_resource(CharacterResourceId, "/api/characters/id/<string:id>")
 api.add_resource(CharacterCollection, "/api/characters")
+api.add_resource(CharacterCollectionName, "/api/characters/name")
 
 
 @app.route("/")
