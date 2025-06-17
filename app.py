@@ -57,7 +57,8 @@ class CharacterCollection(Resource):
 class CharacterCollectionName(Resource):
     def get(self):
         characters = CharacterModel.objects()
-        return characters_schema.dump(characters), 200
+        names = [character.name for character in characters]
+        return {"names": names}, 200
 
 
 class CharacterResourceName(Resource):
