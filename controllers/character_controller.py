@@ -131,3 +131,11 @@ class CharacterController:
             return "", 204
         except DoesNotExist:
             return {"message": f"Character with ID '{id}' not found"}, 404
+
+    @staticmethod
+    def delete_all_characters():
+        try:
+            CharacterModel.objects.delete()
+            return {"message": "All characters deleted successfully"}, 200
+        except Exception as e:
+            return {"message": "An error occurred", "error": str(e)}, 500

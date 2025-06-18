@@ -11,6 +11,7 @@ from views.character_view import (
     CharacterGetById,
     CharacterUpdateById,
     CharacterDeleteById,
+    CharacterDeleteAll,
     CharacterCollectionName,
     CharacterCollectionAffiliation,
     CharacterCollectionSpecies,
@@ -36,6 +37,7 @@ api.add_resource(CharacterDeleteByName, "/api/characters/<string:name>")
 api.add_resource(CharacterGetById, "/api/characters/id/<string:id>")
 api.add_resource(CharacterUpdateById, "/api/characters/id/<string:id>")
 api.add_resource(CharacterDeleteById, "/api/characters/id/<string:id>")
+api.add_resource(CharacterDeleteAll, "/api/characters")
 api.add_resource(CharacterList, "/api/characters")
 api.add_resource(CharacterCreate, "/api/characters")
 api.add_resource(CharacterCollectionName, "/api/characters/names")
