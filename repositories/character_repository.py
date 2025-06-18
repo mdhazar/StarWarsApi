@@ -53,3 +53,7 @@ class CharacterRepository:
     @staticmethod
     def delete(character):
         character.delete()
+
+    @staticmethod
+    def delete_all():
+        CharacterModel.objects.delete()

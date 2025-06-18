@@ -61,3 +61,8 @@ class CharacterUpdateById(Resource):
 class CharacterDeleteById(Resource):
     def delete(self, id):
         return CharacterController.delete_character_by_id(id)
+
+
+class CharacterDeleteAll(Resource):
+    def delete(self):
+        return CharacterController.delete_all_characters()

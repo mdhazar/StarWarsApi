@@ -118,3 +118,8 @@ class CharacterController:
             CharacterRepository.delete(character)
             return "", 204
         return {"message": f"Character with ID '{id}' not found"}, 404
+
+    @staticmethod
+    def delete_all_characters():
+        CharacterRepository.delete_all()
+        return {"message": "All characters have been deleted"}, 200

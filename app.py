@@ -15,6 +15,7 @@ from views.character_view import (
     CharacterCollectionAffiliation,
     CharacterCollectionSpecies,
     CharacterCollectionHomeworld,
+    CharacterDeleteAll,
 )
 from views.home_view import home_bp
 
@@ -42,6 +43,7 @@ api.add_resource(CharacterCollectionName, "/api/characters/names")
 api.add_resource(CharacterCollectionAffiliation, "/api/characters/affiliations")
 api.add_resource(CharacterCollectionSpecies, "/api/characters/species")
 api.add_resource(CharacterCollectionHomeworld, "/api/characters/homeworld")
+api.add_resource(CharacterDeleteAll, "/api/characters/delete-all")
 
 app.register_blueprint(home_bp)
 
