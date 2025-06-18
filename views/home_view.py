@@ -54,23 +54,7 @@ def home():
     <input name="characterName" placeholder="Character Name" required />
     <button type="submit">Delete Character</button>
     </form>
-    <h2>Delete All Characters (DELETE)</h2>
-    <form onsubmit="event.preventDefault();
-    if (confirm('Are you sure you want to delete all characters?')) {
-        fetch('/api/characters', {
-            method: 'DELETE'
-        })
-        .then(res => {
-            if (res.status === 200) {
-            alert('All characters deleted successfully');
-            } else {
-            return res.json().then(data => alert(JSON.stringify(data)));
-            }
-        })
-        .catch(err => alert('Error: ' + err));
-    }
-    ">
-    <button type="submit">Delete All Characters</button>
+    
     </form>
     <h2>Create New Character (POST)</h2>
     <form id="create-character-form" onsubmit="event.preventDefault();
@@ -98,4 +82,21 @@ def home():
       <input name="image" placeholder="Image URL (optional)" /><br />
       <button type="submit">Create Character</button>
     </form>
+    <h2>Delete All Characters (DELETE)</h2>
+    <form onsubmit="event.preventDefault();
+    if (confirm('Are you sure you want to delete all characters?')) {
+        fetch('/api/characters', {
+            method: 'DELETE'
+        })
+        .then(res => {
+            if (res.status === 200) {
+            alert('All characters deleted successfully');
+            } else {
+            return res.json().then(data => alert(JSON.stringify(data)));
+            }
+        })
+        .catch(err => alert('Error: ' + err));
+    }
+    ">
+    <button type="submit">Delete All Characters</button>
     """
