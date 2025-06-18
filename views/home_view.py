@@ -83,11 +83,16 @@ def home():
     <h2>Delete All Characters (DELETE)</h2>
     <form onsubmit="event.preventDefault();
     if (confirm('Are you sure you want to delete all characters?')) {
-        fetch('/api/characters/delete-all', {
+        fetch('/api/characters', {
             method: 'DELETE'
         })
-        .then(res => res.json())
-        .then(data => alert(JSON.stringify(data)))
+        .then(res => {
+            if (res.status === 200) {
+            alert('All characters deleted successfully');
+            } else {
+            return res.json().then(data => alert(JSON.stringify(data)));
+            }
+        })
         .catch(err => alert('Error: ' + err));
     }
     ">

@@ -43,7 +43,7 @@ api.add_resource(CharacterCollectionName, "/api/characters/names")
 api.add_resource(CharacterCollectionAffiliation, "/api/characters/affiliations")
 api.add_resource(CharacterCollectionSpecies, "/api/characters/species")
 api.add_resource(CharacterCollectionHomeworld, "/api/characters/homeworld")
-api.add_resource(CharacterDeleteAll, "/api/characters/delete-all")
+api.add_resource(CharacterDeleteAll, "/api/characters")
 
 app.register_blueprint(home_bp)
 
