@@ -1,21 +1,23 @@
-from models.character import CharacterModel, character_schema, characters_schema
-from mongoengine import DoesNotExist, ValidationError
-import string
+from models.character_schema import character_schema, characters_schema
+from repositories.character_repository import CharacterRepository
+from services.character_service import CharacterService
+from mongoengine import ValidationError
 
 
 class CharacterController:
     @staticmethod
     def get_all_characters():
-        return characters_schema.dump(CharacterModel.objects()), 200
+        characters = CharacterRepository.get_all()
+        return characters_schema.dump(characters), 200
 
     @staticmethod
     def get_character_names():
-        characters = CharacterModel.objects().only("name")
+        characters = CharacterRepository.get_all_names()
         return {"names": [c.name for c in characters]}, 200
 
     @staticmethod
     def get_character_affiliations():
-        characters = CharacterModel.objects().only("name", "affiliation")
+        characters = CharacterRepository.get_all_affiliations()
         affiliation_dict = {}
         for character in characters:
             if character.affiliation not in affiliation_dict:
@@ -25,7 +27,7 @@ class CharacterController:
 
     @staticmethod
     def get_character_species():
-        characters = CharacterModel.objects().only("name", "species")
+        characters = CharacterRepository.get_all_species()
         species_dict = {}
         for character in characters:
             if character.species not in species_dict:
@@ -35,7 +37,7 @@ class CharacterController:
 
     @staticmethod
     def get_character_homeworlds():
-        characters = CharacterModel.objects().only("name", "homeworld", "species")
+        characters = CharacterRepository.get_all_homeworlds()
         homeworld_dict = {}
         for character in characters:
             if character.homeworld not in homeworld_dict:
@@ -47,87 +49,72 @@ class CharacterController:
 
     @staticmethod
     def create_character(data):
-        for field in ["name", "affiliation", "homeworld", "species"]:
-            if field in data and isinstance(data[field], str):
-                data[field] = string.capwords(data[field])
+        data = CharacterService.capitalize_fields(data)
         errors = character_schema.validate(data)
         if errors:
             return {"message": "Validation failed", "errors": errors}, 400
         try:
-            character = CharacterModel(**data)
-            character.save()
+            character = CharacterRepository.create(data)
             return character_schema.dump(character), 201
         except ValidationError as e:
             return {"message": "Validation failed", "errors": str(e)}, 400
 
     @staticmethod
     def get_character_by_name(name):
-        try:
-            character = CharacterModel.objects.get(name=name)
+        character = CharacterRepository.get_by_name(name)
+        if character:
             return character_schema.dump(character), 200
-        except DoesNotExist:
-            return {"message": f"Character with name '{name}' not found"}, 404
+        return {"message": f"Character with name '{name}' not found"}, 404
 
     @staticmethod
     def update_character_by_name(name, data):
-        for field in ["name", "affiliation", "homeworld", "species"]:
-            if field in data and isinstance(data[field], str):
-                data[field] = string.capwords(data[field])
+        data = CharacterService.capitalize_fields(data)
         errors = character_schema.validate(data, partial=True)
         if errors:
             return {"message": "Validation failed", "errors": errors}, 400
-        try:
-            character = CharacterModel.objects.get(name=name)
-            for field, value in data.items():
-                setattr(character, field, value)
-            character.save()
-            return character_schema.dump(character), 200
-        except DoesNotExist:
+        character = CharacterRepository.get_by_name(name)
+        if not character:
             return {"message": f"Character with name '{name}' not found"}, 404
+        try:
+            updated_character = CharacterRepository.update(character, data)
+            return character_schema.dump(updated_character), 200
         except ValidationError as e:
             return {"message": "Validation failed", "errors": str(e)}, 400
 
     @staticmethod
     def delete_character_by_name(name):
-        try:
-            character = CharacterModel.objects.get(name=name)
-            character.delete()
+        character = CharacterRepository.get_by_name(name)
+        if character:
+            CharacterRepository.delete(character)
             return "", 204
-        except DoesNotExist:
-            return {"message": f"Character with name '{name}' not found"}, 404
+        return {"message": f"Character with name '{name}' not found"}, 404
 
     @staticmethod
     def get_character_by_id(id):
-        try:
-            character = CharacterModel.objects.get(id=id)
+        character = CharacterRepository.get_by_id(id)
+        if character:
             return character_schema.dump(character), 200
-        except DoesNotExist:
-            return {"message": f"Character with ID '{id}' not found"}, 404
+        return {"message": f"Character with ID '{id}' not found"}, 404
 
     @staticmethod
     def update_character_by_id(id, data):
-        for field in ["name", "affiliation", "homeworld", "species"]:
-            if field in data and isinstance(data[field], str):
-                data[field] = string.capwords(data[field])
+        data = CharacterService.capitalize_fields(data)
         errors = character_schema.validate(data, partial=True)
         if errors:
             return {"message": "Validation failed", "errors": errors}, 400
-        try:
-            character = CharacterModel.objects.get(id=id)
-            for field, value in data.items():
-                setattr(character, field, value)
-            character.save()
-            return character_schema.dump(character), 200
-        except DoesNotExist:
+        character = CharacterRepository.get_by_id(id)
+        if not character:
             return {"message": f"Character with ID '{id}' not found"}, 404
+        try:
+            updated_character = CharacterRepository.update(character, data)
+            return character_schema.dump(updated_character), 200
         except ValidationError as e:
             return {"message": "Validation failed", "errors": str(e)}, 400
 
     @staticmethod
     def delete_character_by_id(id):
-        try:
-            character = CharacterModel.objects.get(id=id)
-            character.delete()
+        character = CharacterRepository.get_by_id(id)
+        if character:
+            CharacterRepository.delete(character)
             return "", 204
-        except DoesNotExist:
-            return {"message": f"Character with ID '{id}' not found"}, 404
+        return {"message": f"Character with ID '{id}' not found"}, 404
