@@ -2,22 +2,8 @@ from flask import Flask
 from flask_restful import Api
 from mongoengine import connect
 from config import Config
-from views.character_view import (
-    CharacterList,
-    CharacterCreate,
-    CharacterGetByName,
-    CharacterUpdateByName,
-    CharacterDeleteByName,
-    CharacterGetById,
-    CharacterUpdateById,
-    CharacterDeleteById,
-    CharacterCollectionName,
-    CharacterCollectionAffiliation,
-    CharacterCollectionSpecies,
-    CharacterCollectionHomeworld,
-    CharacterDeleteAll,
-)
 from views.home_view import home_bp
+from utils.routes import register_resources
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -30,20 +16,7 @@ connect(
 )
 
 api = Api(app)
-
-api.add_resource(CharacterGetByName, "/api/characters/<string:name>")
-api.add_resource(CharacterUpdateByName, "/api/characters/<string:name>")
-api.add_resource(CharacterDeleteByName, "/api/characters/<string:name>")
-api.add_resource(CharacterGetById, "/api/characters/id/<string:id>")
-api.add_resource(CharacterUpdateById, "/api/characters/id/<string:id>")
-api.add_resource(CharacterDeleteById, "/api/characters/id/<string:id>")
-api.add_resource(CharacterList, "/api/characters")
-api.add_resource(CharacterCreate, "/api/characters")
-api.add_resource(CharacterCollectionName, "/api/characters/names")
-api.add_resource(CharacterCollectionAffiliation, "/api/characters/affiliations")
-api.add_resource(CharacterCollectionSpecies, "/api/characters/species")
-api.add_resource(CharacterCollectionHomeworld, "/api/characters/homeworld")
-api.add_resource(CharacterDeleteAll, "/api/characters")
+register_resources(api)
 
 app.register_blueprint(home_bp)
 

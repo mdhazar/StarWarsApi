@@ -5,17 +5,14 @@ from mongoengine import ValidationError
 
 
 class CharacterController:
-    @staticmethod
     def get_all_characters():
         characters = CharacterRepository.get_all()
         return characters_schema.dump(characters), 200
 
-    @staticmethod
     def get_character_names():
         characters = CharacterRepository.get_all_names()
         return {"names": [c.name for c in characters]}, 200
 
-    @staticmethod
     def get_character_affiliations():
         characters = CharacterRepository.get_all_affiliations()
         affiliation_dict = {}
@@ -25,7 +22,6 @@ class CharacterController:
             affiliation_dict[character.affiliation].append(character.name)
         return {"affiliations": affiliation_dict}, 200
 
-    @staticmethod
     def get_character_species():
         characters = CharacterRepository.get_all_species()
         species_dict = {}
@@ -35,7 +31,6 @@ class CharacterController:
             species_dict[character.species].append(character.name)
         return {"species": species_dict}, 200
 
-    @staticmethod
     def get_character_homeworlds():
         characters = CharacterRepository.get_all_homeworlds()
         homeworld_dict = {}
@@ -47,7 +42,6 @@ class CharacterController:
             )
         return {"homeworld": homeworld_dict}, 200
 
-    @staticmethod
     def create_character(data):
         data = CharacterService.capitalize_fields(data)
         errors = character_schema.validate(data)
@@ -59,14 +53,12 @@ class CharacterController:
         except ValidationError as e:
             return {"message": "Validation failed", "errors": str(e)}, 400
 
-    @staticmethod
     def get_character_by_name(name):
         character = CharacterRepository.get_by_name(name)
         if character:
             return character_schema.dump(character), 200
         return {"message": f"Character with name '{name}' not found"}, 404
 
-    @staticmethod
     def update_character_by_name(name, data):
         data = CharacterService.capitalize_fields(data)
         errors = character_schema.validate(data, partial=True)
@@ -81,7 +73,6 @@ class CharacterController:
         except ValidationError as e:
             return {"message": "Validation failed", "errors": str(e)}, 400
 
-    @staticmethod
     def delete_character_by_name(name):
         character = CharacterRepository.get_by_name(name)
         if character:
@@ -89,14 +80,12 @@ class CharacterController:
             return "", 204
         return {"message": f"Character with name '{name}' not found"}, 404
 
-    @staticmethod
     def get_character_by_id(id):
         character = CharacterRepository.get_by_id(id)
         if character:
             return character_schema.dump(character), 200
         return {"message": f"Character with ID '{id}' not found"}, 404
 
-    @staticmethod
     def update_character_by_id(id, data):
         data = CharacterService.capitalize_fields(data)
         errors = character_schema.validate(data, partial=True)
@@ -111,7 +100,6 @@ class CharacterController:
         except ValidationError as e:
             return {"message": "Validation failed", "errors": str(e)}, 400
 
-    @staticmethod
     def delete_character_by_id(id):
         character = CharacterRepository.get_by_id(id)
         if character:
@@ -119,7 +107,6 @@ class CharacterController:
             return "", 204
         return {"message": f"Character with ID '{id}' not found"}, 404
 
-    @staticmethod
     def delete_all_characters():
         CharacterRepository.delete_all()
         return {"message": "All characters have been deleted"}, 200
