@@ -13,7 +13,7 @@ def home():
         <li><a href="/api/characters/affiliations">Character Affiliations</a></li>
         <li><a href="/api/characters/species">Character Species</a></li>
         <li><a href="/api/characters/homeworld">Character Homeworlds</a></li>
-        <li><a href="/api/characters/id/68531674aa03eb8c43d54627">Get Character by ID (example: 68531674aa03eb8c43d54627)</a></li>
+        <li><a href="/api/characters/id/6853bc03861f983d0b17f210">Get Character by ID (example: 6853bc03861f983d0b17f210)</a></li>
         <li><a href="/api/characters/Palpatine">Get Character by Name (example: Palpatine)</a></li>
     </ul>
     <h2>Update Character (Patch)</h2>

@@ -54,17 +54,15 @@ class CharacterController:
         if errors:
             return {"message": "Validation failed", "errors": errors}, 400
         try:
-            character = CharacterModel(**data)
-            character.save()
-            return character_schema.dump(character), 201
+            CharacterModel(**data).save()
+            return character_schema.dump(CharacterModel(**data)), 201
         except ValidationError as e:
             return {"message": "Validation failed", "errors": str(e)}, 400
 
     @staticmethod
     def get_character_by_name(name):
         try:
-            character = CharacterModel.objects.get(name=name)
-            return character_schema.dump(character), 200
+            return character_schema.dump(CharacterModel.objects.get(name=name)), 200
         except DoesNotExist:
             return {"message": f"Character with name '{name}' not found"}, 404
 
@@ -88,23 +86,6 @@ class CharacterController:
             return {"message": "Validation failed", "errors": str(e)}, 400
 
     @staticmethod
-    def delete_character_by_name(name):
-        try:
-            character = CharacterModel.objects.get(name=name)
-            character.delete()
-            return "", 204
-        except DoesNotExist:
-            return {"message": f"Character with name '{name}' not found"}, 404
-
-    @staticmethod
-    def get_character_by_id(id):
-        try:
-            character = CharacterModel.objects.get(id=id)
-            return character_schema.dump(character), 200
-        except DoesNotExist:
-            return {"message": f"Character with ID '{id}' not found"}, 404
-
-    @staticmethod
     def update_character_by_id(id, data):
         for field in ["name", "affiliation", "homeworld", "species"]:
             if field in data and isinstance(data[field], str):
@@ -124,10 +105,24 @@ class CharacterController:
             return {"message": "Validation failed", "errors": str(e)}, 400
 
     @staticmethod
+    def delete_character_by_name(name):
+        try:
+            CharacterModel.objects.get(name=name).delete()
+            return "", 204
+        except DoesNotExist:
+            return {"message": f"Character with name '{name}' not found"}, 404
+
+    @staticmethod
+    def get_character_by_id(id):
+        try:
+            return character_schema.dump(CharacterModel.objects.get(id=id)), 200
+        except DoesNotExist:
+            return {"message": f"Character with ID '{id}' not found"}, 404
+
+    @staticmethod
     def delete_character_by_id(id):
         try:
-            character = CharacterModel.objects.get(id=id)
-            character.delete()
+            CharacterModel.objects.get(id=id).delete()
             return "", 204
         except DoesNotExist:
             return {"message": f"Character with ID '{id}' not found"}, 404
